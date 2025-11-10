@@ -1,0 +1,433 @@
+import React, { useState } from 'react';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Package, CheckCircle, TrendingUp, AlertTriangle, Users } from 'lucide-react';
+
+export default function Dashboard() {
+  const [tab, setTab] = useState('overview');
+
+  const prod = [
+    { name: '5KW 1PH', test: 16, done: 6 },
+    { name: '5KW 3PH', test: 1, done: 7 },
+    { name: '6KW 1PH', test: 3, done: 2 },
+    { name: '8KW 3PH', test: 0, done: 3 },
+    { name: '10KW 3PH', test: 6, done: 3 },
+    { name: '15KW 3PH', test: 3, done: 1 }
+  ];
+
+  const dispatch = [
+    { name: 'VARUN', val: 7 },
+    { name: 'KHEMRAJ', val: 11 },
+    { name: 'Private', val: 8 }
+  ];
+
+  const colors = ['#10b981', '#f59e0b', '#3b82f6'];
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        
+        <div className="bg-blue-600 rounded-lg shadow-lg p-8 mb-6 text-white">
+          <h1 className="text-4xl font-bold">Solar Inverter Dashboard</h1>
+          <p className="text-lg mt-2">October 2025 Report</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-2 mb-6 flex gap-2">
+          <button onClick={() => setTab('overview')} className={`flex-1 py-3 px-4 rounded font-medium ${tab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            Overview
+          </button>
+          <button onClick={() => setTab('production')} className={`flex-1 py-3 px-4 rounded font-medium ${tab === 'production' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            Production
+          </button>
+          <button onClick={() => setTab('complaints')} className={`flex-1 py-3 px-4 rounded font-medium ${tab === 'complaints' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            Complaints
+          </button>
+          <button onClick={() => setTab('dispatch')} className={`flex-1 py-3 px-4 rounded font-medium ${tab === 'dispatch' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            Dispatch
+          </button>
+        </div>
+
+        {tab === 'overview' && (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Total Production</p>
+                    <p className="text-3xl font-bold text-blue-600 mt-2">31</p>
+                    <p className="text-xs text-gray-400 mt-1">Sets in Oct</p>
+                  </div>
+                  <Package size={40} className="text-blue-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Testing</p>
+                    <p className="text-3xl font-bold text-green-600 mt-2">29</p>
+                    <p className="text-xs text-gray-400 mt-1">22 pending PCB</p>
+                  </div>
+                  <CheckCircle size={40} className="text-green-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Dispatched</p>
+                    <p className="text-3xl font-bold text-purple-600 mt-2">26</p>
+                    <p className="text-xs text-gray-400 mt-1">PEDA: 18 | Pvt: 8</p>
+                  </div>
+                  <TrendingUp size={40} className="text-purple-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Complaints</p>
+                    <p className="text-3xl font-bold text-red-600 mt-2">47</p>
+                    <p className="text-xs text-gray-400 mt-1">43 days avg</p>
+                  </div>
+                  <AlertTriangle size={40} className="text-red-500" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">Production by Rating</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={prod}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="test" fill="#3b82f6" name="Testing" />
+                    <Bar dataKey="done" fill="#10b981" name="Completed" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">Dispatch Distribution</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie data={dispatch} cx="50%" cy="50%" outerRadius={90} dataKey="val" label={(e) => `${e.name}: ${e.val}`}>
+                      {dispatch.map((e, i) => <Cell key={i} fill={colors[i]} />)}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">PEDA Complaints</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between p-3 bg-red-50 rounded">
+                    <span className="font-medium">Pending</span>
+                    <span className="text-2xl font-bold text-red-600">45</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-green-50 rounded">
+                    <span className="font-medium">Replaced</span>
+                    <span className="text-2xl font-bold text-green-600">16</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-blue-50 rounded">
+                    <span className="font-medium">Avg Time</span>
+                    <span className="text-2xl font-bold text-blue-600">43d</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">Private Complaints</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between p-3 bg-red-50 rounded">
+                    <span className="font-medium">Pending</span>
+                    <span className="text-2xl font-bold text-red-600">2</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-green-50 rounded">
+                    <span className="font-medium">Replaced</span>
+                    <span className="text-2xl font-bold text-green-600">8</span>
+                  </div>
+                  <div className="flex justify-between p-3 bg-blue-50 rounded">
+                    <span className="font-medium">Avg Time</span>
+                    <span className="text-2xl font-bold text-blue-600">11d</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'production' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-bold mb-4">Production Details</h3>
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-bold">Rating</th>
+                  <th className="px-4 py-3 text-left text-sm font-bold">Testing</th>
+                  <th className="px-4 py-3 text-left text-sm font-bold">Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {prod.map((p, i) => (
+                  <tr key={i} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium">{p.name}</td>
+                    <td className="px-4 py-3">{p.test}</td>
+                    <td className="px-4 py-3 text-green-600 font-bold">{p.done}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {tab === 'complaints' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 border-b pb-2">PEDA Complaints</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 bg-blue-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Opening</p>
+                  <p className="text-3xl font-bold text-blue-600">52</p>
+                  <p className="text-xs text-gray-500 mt-1">Jun-Sep 2025</p>
+                </div>
+                <div className="p-4 bg-green-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Received</p>
+                  <p className="text-3xl font-bold text-green-600">9</p>
+                  <p className="text-xs text-gray-500 mt-1">Oct 2025</p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Replaced</p>
+                  <p className="text-3xl font-bold text-purple-600">16</p>
+                  <p className="text-xs text-gray-500 mt-1">Oct 2025</p>
+                </div>
+                <div className="p-4 bg-red-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Closing</p>
+                  <p className="text-3xl font-bold text-red-600">45</p>
+                  <p className="text-xs text-gray-500 mt-1">43 days avg</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 border-b pb-2">Private Complaints</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 bg-blue-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Opening</p>
+                  <p className="text-3xl font-bold text-blue-600">1</p>
+                </div>
+                <div className="p-4 bg-green-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Received</p>
+                  <p className="text-3xl font-bold text-green-600">8</p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Replaced</p>
+                  <p className="text-3xl font-bold text-purple-600">8</p>
+                </div>
+                <div className="p-4 bg-red-50 rounded text-center">
+                  <p className="text-sm text-gray-600">Closing</p>
+                  <p className="text-3xl font-bold text-red-600">2</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 border-b pb-2">Pending Not Returned - PEDA</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="font-bold text-gray-700 mb-3">VARUN (11-10-2025)</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <span>5KW 1PHASE</span>
+                      <span className="font-bold text-red-600">7</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <span>5KW 3PHASE</span>
+                      <span className="font-bold text-red-600">1</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-700 mb-3">KHEMRAJ</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <span>5KW 1PHASE (10-10)</span>
+                      <span className="font-bold text-red-600">4</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <span>5KW 3PHASE (18-10)</span>
+                      <span className="font-bold text-red-600">1</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-red-50 border border-red-200 rounded">
+                      <span>5KW 1PHASE (25-10)</span>
+                      <span className="font-bold text-red-600">1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 p-4 bg-gray-100 rounded">
+                <div className="flex justify-between">
+                  <span className="font-bold">Total PEDA Pending</span>
+                  <span className="text-2xl font-bold text-red-600">14 units</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-4 border-b pb-2">Pending Not Returned - Private</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">3KW 1PH</p>
+                  <p className="text-2xl font-bold">5</p>
+                </div>
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">5KW 1PH</p>
+                  <p className="text-2xl font-bold">31</p>
+                </div>
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">6KW 1PH</p>
+                  <p className="text-2xl font-bold">10</p>
+                </div>
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">8KW 3PH</p>
+                  <p className="text-2xl font-bold">10</p>
+                </div>
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">10KW 3PH</p>
+                  <p className="text-2xl font-bold">13</p>
+                </div>
+                <div className="p-3 bg-gray-50 border rounded text-center">
+                  <p className="text-xs text-gray-600">15KW 3PH</p>
+                  <p className="text-2xl font-bold">8</p>
+                </div>
+              </div>
+              <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
+                <div className="flex justify-between">
+                  <span className="font-bold">Total Private Pending</span>
+                  <span className="text-2xl font-bold text-blue-600">78 units</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'dispatch' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">PEDA Dispatch</p>
+                    <p className="text-3xl font-bold text-blue-600 mt-2">18</p>
+                    <p className="text-xs text-gray-400 mt-1">VARUN: 7 | KHEMRAJ: 11</p>
+                  </div>
+                  <Package size={40} className="text-blue-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Private Dispatch</p>
+                    <p className="text-3xl font-bold text-purple-600 mt-2">8</p>
+                    <p className="text-xs text-gray-400 mt-1">Customers</p>
+                  </div>
+                  <Users size={40} className="text-purple-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-gray-500 text-sm">Total</p>
+                    <p className="text-3xl font-bold text-green-600 mt-2">26</p>
+                    <p className="text-xs text-gray-400 mt-1">October 2025</p>
+                  </div>
+                  <TrendingUp size={40} className="text-green-500" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">PEDA Site Engineers</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded">
+                    <div className="flex justify-between mb-2">
+                      <span className="font-bold">VARUN</span>
+                      <span className="text-2xl font-bold text-blue-600">7</span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <p>5KW 1PHASE: 6 units</p>
+                      <p>5KW 3PHASE: 1 unit</p>
+                      <p>Date: 11-10-2025</p>
+                    </div>
+                  </div>
+                  <div className="p-4 border rounded">
+                    <div className="flex justify-between mb-2">
+                      <span className="font-bold">KHEMRAJ</span>
+                      <span className="text-2xl font-bold text-blue-600">11</span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <p>5KW 1PHASE: 9 units</p>
+                      <p>5KW 3PHASE: 2 units</p>
+                      <p>Dates: 07-10 to 10-10</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold mb-4">Private Customers</h3>
+                <div className="space-y-2">
+                  <div className="p-3 bg-gray-50 rounded flex justify-between">
+                    <div>
+                      <p className="font-medium">GOVINDER SINGH</p>
+                      <p className="text-sm text-gray-600">5KW 1PHASE</p>
+                    </div>
+                    <p className="text-sm text-gray-500">09-10</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded flex justify-between">
+                    <div>
+                      <p className="font-medium">SAVITA TEXTILE</p>
+                      <p className="text-sm text-gray-600">15KW 3PHASE</p>
+                    </div>
+                    <p className="text-sm text-gray-500">09-10</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded flex justify-between">
+                    <div>
+                      <p className="font-medium">SEVEN MILLION</p>
+                      <p className="text-sm text-gray-600">10KW 3PHASE</p>
+                    </div>
+                    <p className="text-sm text-gray-500">25-10</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded flex justify-between">
+                    <div>
+                      <p className="font-medium">MITTAL SOLAR (2)</p>
+                      <p className="text-sm text-gray-600">5KW/6KW 1PH</p>
+                    </div>
+                    <p className="text-sm text-gray-500">28-10</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded flex justify-between">
+                    <div>
+                      <p className="font-medium">LOKESH YADAV</p>
+                      <p className="text-sm text-gray-600">5KW 1PHASE</p>
+                    </div>
+                    <p className="text-sm text-gray-500">28-10</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
